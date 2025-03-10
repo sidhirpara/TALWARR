@@ -30,7 +30,7 @@ function App() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-20">
               <div className="flex-shrink-0">
-                <Link to="/" className="text-2xl font-serif text-slate-800">ESSENCE</Link>
+                <Link to="/" className="text-2xl font-serif text-slate-800">TALWAR</Link>
               </div>
 
               {/* Desktop Navigation */}
