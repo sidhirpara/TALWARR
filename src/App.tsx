@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { ShoppingBag, Search, Menu, X } from 'lucide-react';
 import Gallery from './components/Gallery';
 import SearchBar from './components/SearchBar';
+import About from './components/About';
 
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -38,7 +39,7 @@ function App() {
                 {navigationItems.map((item) => (
                   <Link
                     key={item}
-                    to={item === 'GALLERY' ? '/gallery' : '#'}
+                    to={item === 'GALLERY' ? '/gallery' : item === 'ABOUT' ? '/about' : '#'}
                     className="text-slate-600 hover:text-slate-900 tracking-widest text-sm font-light transition-colors duration-200"
                   >
                     {item}
@@ -77,7 +78,7 @@ function App() {
                 {navigationItems.map((item) => (
                   <Link
                     key={item}
-                    to={item === 'GALLERY' ? '/gallery' : '#'}
+                    to={item === 'GALLERY' ? '/gallery' : item === 'ABOUT' ? '/about' : '#'}
                     className="block px-3 py-2 text-base font-light text-slate-600 hover:text-slate-900 tracking-widest"
                     onClick={() => setIsMenuOpen(false)}
                   >
@@ -94,6 +95,7 @@ function App() {
 
         <Routes>
           <Route path="/gallery" element={<Gallery />} />
+          <Route path="/about" element={<About />} />
           <Route path="/" element={
             <div className="relative min-h-screen flex items-center">
               <div className="absolute inset-0 overflow-hidden">
