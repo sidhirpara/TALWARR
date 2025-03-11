@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, Search, Menu, X } from 'lucide-react';
 import Gallery from './components/Gallery';
 import SearchBar from './components/SearchBar';
 import About from './components/About';
 import CustomCursor from './components/CustomCursor';
+import QRLanding from './components/QRLanding';
 
-function App() {
+function NavigationContent() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,10 +22,21 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navigationItems = ['COLLECTIONS', 'NEW ARRIVALS', 'GALLERY', 'BESTSELLERS', 'ABOUT'];
+  const navigationItems = [
+    { name: 'COLLECTIONS', path: '/' },
+    { name: 'NEW ARRIVALS', path: '/' },
+    { name: 'GALLERY', path: '/gallery' },
+    { name: 'BESTSELLERS', path: '/' },
+    { name: 'ABOUT', path: '/about' },
+    { name: 'QR CODE', path: '/qr' }
+  ];
+
+  const isActivePath = (path: string) => {
+    return location.pathname === path;
+  };
 
   return (
-    <Router>
+    <>
       <CustomCursor />
       <div className="min-h-screen bg-gradient-to-br from-rose-50 to-slate-50">
         {/* Navigation */}
@@ -40,11 +53,13 @@ function App() {
               <div className="hidden md:flex space-x-8">
                 {navigationItems.map((item) => (
                   <Link
-                    key={item}
-                    to={item === 'GALLERY' ? '/gallery' : item === 'ABOUT' ? '/about' : '#'}
-                    className="text-slate-600 hover:text-slate-900 tracking-widest text-sm font-light transition-colors duration-200"
+                    key={item.name}
+                    to={item.path}
+                    className={`text-slate-600 hover:text-slate-900 tracking-widest text-sm font-light transition-colors duration-200 ${
+                      isActivePath(item.path) ? 'text-slate-900 font-medium' : ''
+                    }`}
                   >
-                    {item}
+                    {item.name}
                   </Link>
                 ))}
               </div>
@@ -75,12 +90,14 @@ function App() {
               <div className="px-2 pt-2 pb-3 space-y-1">
                 {navigationItems.map((item) => (
                   <Link
-                    key={item}
-                    to={item === 'GALLERY' ? '/gallery' : item === 'ABOUT' ? '/about' : '#'}
-                    className="block px-3 py-2 text-base font-light text-slate-600 hover:text-slate-900 tracking-widest"
+                    key={item.name}
+                    to={item.path}
+                    className={`block px-3 py-2 text-base font-light text-slate-600 hover:text-slate-900 tracking-widest ${
+                      isActivePath(item.path) ? 'text-slate-900 font-medium bg-slate-50' : ''
+                    }`}
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    {item}
+                    {item.name}
                   </Link>
                 ))}
               </div>
@@ -94,6 +111,7 @@ function App() {
         <Routes>
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/about" element={<About />} />
+          <Route path="/qr" element={<QRLanding />} />
           <Route path="/" element={
             <div className="relative min-h-screen flex items-center">
               <div className="absolute inset-0 overflow-hidden">
@@ -128,6 +146,14 @@ function App() {
           } />
         </Routes>
       </div>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <NavigationContent />
     </Router>
   );
 }
