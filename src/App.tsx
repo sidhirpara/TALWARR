@@ -4,6 +4,7 @@ import { ShoppingBag, Search, Menu, X } from 'lucide-react';
 import Gallery from './components/Gallery';
 import SearchBar from './components/SearchBar';
 import About from './components/About';
+import CustomCursor from './components/CustomCursor';
 
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -23,6 +24,7 @@ function App() {
 
   return (
     <Router>
+      <CustomCursor />
       <div className="min-h-screen bg-gradient-to-br from-rose-50 to-slate-50">
         {/* Navigation */}
         <nav className={`fixed w-full z-50 transition-all duration-300 ${
@@ -53,19 +55,15 @@ function App() {
                   className="flex items-center focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 rounded-full p-1"
                   aria-label="Open search"
                 >
-                  <Search className="w-6 h-6 text-slate-600 hover:text-slate-900 cursor-pointer transition-colors duration-200" />
+                  <Search className="w-6 h-6 text-slate-600 hover:text-slate-900 transition-colors duration-200" />
                 </button>
-                <ShoppingBag className="w-6 h-6 text-slate-600 hover:text-slate-900 cursor-pointer transition-colors duration-200" />
+                <ShoppingBag className="w-6 h-6 text-slate-600 hover:text-slate-900 transition-colors duration-200" />
                 <button
                   className="md:hidden"
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
                   aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
                 >
-                  {isMenuOpen ? (
-                    <X className="w-6 h-6 text-slate-600" />
-                  ) : (
-                    <Menu className="w-6 h-6 text-slate-600" />
-                  )}
+                  {isMenuOpen ? <X className="w-6 h-6 text-slate-600" /> : <Menu className="w-6 h-6 text-slate-600" />}
                 </button>
               </div>
             </div>
