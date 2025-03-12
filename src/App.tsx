@@ -6,7 +6,7 @@ import SearchBar from './components/SearchBar';
 import About from './components/About';
 import CustomCursor from './components/CustomCursor';
 import QRLanding from './components/QRLanding';
-import HeroImage from './Assets/Pictures/Hero.jpg';
+import HeroImage from './Assets/Pictures/Hero.webp';
 
 
 function NavigationContent() {
