@@ -6,7 +6,6 @@ import SearchBar from './components/SearchBar';
 import About from './components/About';
 import CustomCursor from './components/CustomCursor';
 import QRLanding from './components/QRLanding';
-import HeroImage from './Assets/Pictures/Hero.webp';
 
 
 function NavigationContent() {
@@ -137,7 +136,8 @@ function NavigationContent() {
                   
                   <div className="hidden md:block">
                     <img
-                      src={HeroImage}
+                      src="https://i.ibb.co/VpzWXpgb/Hero.webp?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80"
+
                       alt="Luxury Perfume"
                       className="rounded-lg shadow-xl hover:scale-[1.02] transition-transform duration-500"
                     />
