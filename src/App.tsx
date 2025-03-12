@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, Search, Menu, X } from 'lucide-react';
 import Gallery from './components/Gallery';
 import SearchBar from './components/SearchBar';
 import About from './components/About';
-import CustomCursor from './components/CustomCursor';
 import QRLanding from './components/QRLanding';
-
+import NewArrivals from './components/NewArrivals';
 
 function NavigationContent() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -25,11 +24,10 @@ function NavigationContent() {
 
   const navigationItems = [
     { name: 'COLLECTIONS', path: '/' },
-    { name: 'NEW ARRIVALS', path: '/' },
+    { name: 'NEW ARRIVALS', path: '/new-arrivals' },
     { name: 'GALLERY', path: '/gallery' },
     { name: 'BESTSELLERS', path: '/' },
-    { name: 'ABOUT', path: '/about' },
-    { name: 'QR CODE', path: '/qr' }
+    { name: 'ABOUT', path: '/about' }
   ];
 
   const isActivePath = (path: string) => {
@@ -38,7 +36,6 @@ function NavigationContent() {
 
   return (
     <>
-      <CustomCursor />
       <div className="min-h-screen bg-gradient-to-br from-rose-50 to-slate-50">
         {/* Navigation */}
         <nav className={`fixed w-full z-50 transition-all duration-300 ${
@@ -109,44 +106,50 @@ function NavigationContent() {
         {/* Search Bar */}
         <SearchBar isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
-        <Routes>
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/qr" element={<QRLanding />} />
-          <Route path="/" element={
-            <div className="relative min-h-screen flex items-center">
-              <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-rose-50 via-slate-50 to-rose-100 opacity-70"></div>
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80')] bg-cover bg-center mix-blend-overlay opacity-30"></div>
-              </div>
+        <Suspense fallback={
+          <div className="min-h-screen flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-slate-900"></div>
+          </div>
+        }>
+          <Routes>
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/qr" element={<QRLanding />} />
+            <Route path="/new-arrivals" element={<NewArrivals />} />
+            <Route path="/" element={
+              <div className="relative min-h-screen flex items-center">
+                <div className="absolute inset-0 overflow-hidden">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-rose-50 via-slate-50 to-rose-100 opacity-70"></div>
+                  <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80')] bg-cover bg-center mix-blend-overlay opacity-30"></div>
+                </div>
 
-              <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
-                <div className="grid md:grid-cols-2 gap-16 items-center">
-                  <div className="text-center md:text-left">
-                    <h2 className="text-4xl md:text-6xl font-serif text-slate-800 mb-6 leading-tight">
-                      Discover Your Signature Scent
-                    </h2>
-                    <p className="text-lg md:text-xl text-slate-600 mb-8 font-light">
-                      Curated fragrances for the modern individual
-                    </p>
-                    <button className="bg-slate-900 text-white px-8 py-3 rounded-full text-lg tracking-wider hover:bg-slate-800 transition-all duration-300 shadow-sm hover:shadow-md">
-                      EXPLORE
-                    </button>
-                  </div>
-                  
-                  <div className="hidden md:block">
-                    <img
-                      src="https://i.ibb.co/cKgSGZXH/Hero.png?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80"
-
-                      alt="Luxury Perfume"
-                      className="rounded-lg shadow-xl hover:scale-[1.02] transition-transform duration-500"
-                    />
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
+                  <div className="grid md:grid-cols-2 gap-16 items-center">
+                    <div className="text-center md:text-left">
+                      <h2 className="text-4xl md:text-6xl font-serif text-slate-800 mb-6 leading-tight">
+                        Discover Your Signature Scent
+                      </h2>
+                      <p className="text-lg md:text-xl text-slate-600 mb-8 font-light">
+                        Curated fragrances for the modern individual
+                      </p>
+                      <button className="bg-slate-900 text-white px-8 py-3 rounded-full text-lg tracking-wider hover:bg-slate-800 transition-all duration-300 shadow-sm hover:shadow-md">
+                        EXPLORE
+                      </button>
+                    </div>
+                    
+                    <div className="hidden md:block">
+                      <img
+                        src="https://i.ibb.co/cKgSGZXH/Hero.png?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80"
+                        alt="Luxury Perfume"
+                        className="rounded-lg shadow-xl hover:scale-[1.02] transition-transform duration-500"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          } />
-        </Routes>
+            } />
+          </Routes>
+        </Suspense>
       </div>
     </>
   );

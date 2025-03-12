@@ -1,6 +1,4 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import PerfumeBottle from '../Assets/Perfume.png';
-import SprayBottle from '../Assets/Spray.png';
 
 interface CursorPosition {
   x: number;
@@ -91,7 +89,7 @@ const CustomCursor = () => {
   return (
     <img
       ref={cursorRef}
-      src={isHovering ? SprayBottle : PerfumeBottle}
+      src={isHovering ? '/src/Assets/Spray.png' : '/src/Assets/Perfume.png'}
       alt="Custom Cursor"
       className={`custom-cursor ${isHovering ? 'hovering' : ''} ${isClicking ? 'clicking' : ''} ${isScrolling ? 'scrolling' : ''}`}
       style={{

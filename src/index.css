@@ -7,44 +7,13 @@
 @layer base {
   html {
     font-family: 'Inter', sans-serif;
-    cursor: none;
   }
   
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', serif;
   }
-
-  a, button, [role="button"], input, select, textarea {
-    cursor: none !important;
-  }
 }
 
 body {
   @apply bg-white text-slate-900;
-}
-
-/* Custom cursor */
-.custom-cursor {
-  will-change: transform;
-  pointer-events: none;
-  backface-visibility: hidden;
-  -webkit-font-smoothing: subpixel-antialiased;
-  transform: translate3d(-50%, -50%, 0);
-  transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-              height 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.custom-cursor.hovering {
-  transform: translate3d(-50%, -50%, 0) scale(1.2);
-  transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.custom-cursor.clicking {
-  transform: translate3d(-50%, -50%, 0) scale(0.9);
-  transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.custom-cursor.scrolling {
-  transform: translate3d(-50%, -50%, 0) scale(1.1);
-  transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
