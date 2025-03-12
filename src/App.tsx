@@ -6,6 +6,8 @@ import SearchBar from './components/SearchBar';
 import About from './components/About';
 import CustomCursor from './components/CustomCursor';
 import QRLanding from './components/QRLanding';
+import HeroImage from './Assets/Pictures/Hero.jpg';
+
 
 function NavigationContent() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -135,7 +137,7 @@ function NavigationContent() {
                   
                   <div className="hidden md:block">
                     <img
-                      src="https://images.unsplash.com/photo-1594035910387-fea47794261f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                      src={HeroImage}
                       alt="Luxury Perfume"
                       className="rounded-lg shadow-xl hover:scale-[1.02] transition-transform duration-500"
                     />

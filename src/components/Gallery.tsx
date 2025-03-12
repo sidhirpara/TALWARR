@@ -1,4 +1,5 @@
 import React from 'react';
+import HeroImage from '../Assets/Pictures/Hero.jpg';
 
 const Gallery = () => {
   const images = [
@@ -16,7 +17,7 @@ const Gallery = () => {
     },
     {
       id: 3,
-      src: "https://images.unsplash.com/photo-1594035910387-fea47794261f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      src: HeroImage,
       title: "Classic Collection",
       description: "Timeless fragrances"
     }
@@ -75,7 +76,7 @@ const Gallery = () => {
 
             <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
               <img
-                src="https://images.unsplash.com/photo-1594035910387-fea47794261f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                src={HeroImage}
                 alt="Product 3"
                 className="w-full h-48 object-cover rounded-md mb-4"
               />
