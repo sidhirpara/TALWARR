@@ -81,7 +81,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50">
       <div 
         ref={searchContainerRef} 
-        className="fixed inset-x-0 top-0 bg-white shadow-lg p-4 animate-slide-down"
+        className="fixed inset-x-0 top-0 bg-white dark:bg-slate-800 shadow-lg p-4 animate-slide-down"
       >
         <div className="max-w-4xl mx-auto">
           <form onSubmit={handleSearch} className="relative">
@@ -94,13 +94,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search for perfumes..."
                 aria-label="Search for perfumes"
-                className="w-full pl-12 pr-10 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent"
+                className="w-full pl-12 pr-10 py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-600 focus:border-transparent bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-300"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={clearSearch}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                   aria-label="Clear search"
                 >
                   <X className="w-5 h-5" />
@@ -113,7 +113,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
               <div className="mt-4 max-h-[60vh] overflow-y-auto">
                 {isSearching ? (
                   <div className="text-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-800 mx-auto"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-800 dark:border-white mx-auto"></div>
                   </div>
                 ) : searchResults.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -121,7 +121,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
                       <div
                         key={product.id}
                         onClick={() => handleProductClick(product)}
-                        className="flex items-center space-x-4 p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+                        className="flex items-center space-x-4 p-4 bg-slate-50 dark:bg-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors cursor-pointer"
                       >
                         <img
                           src={product.image}
@@ -129,13 +129,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
                           className="w-20 h-20 object-cover rounded-md"
                         />
                         <div>
-                          <h3 className="font-serif text-lg text-slate-800">{product.name}</h3>
-                          <p className="text-sm text-slate-600">{product.description}</p>
+                          <h3 className="font-serif text-lg text-slate-800 dark:text-white">{product.name}</h3>
+                          <p className="text-sm text-slate-600 dark:text-slate-300">{product.description}</p>
                           <div className="flex items-center mt-1">
-                            <span className="text-sm font-medium text-slate-800">
+                            <span className="text-sm font-medium text-slate-800 dark:text-white">
                               ${product.price.toFixed(2)}
                             </span>
-                            <span className="ml-2 px-2 py-1 text-xs bg-slate-200 text-slate-600 rounded-full">
+                            <span className="ml-2 px-2 py-1 text-xs bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-300 rounded-full">
                               {product.category}
                             </span>
                           </div>
@@ -145,7 +145,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <p className="text-slate-600">No products found matching "{searchQuery}"</p>
+                    <p className="text-slate-600 dark:text-slate-300">No products found matching "{searchQuery}"</p>
                   </div>
                 )}
               </div>
@@ -154,14 +154,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
             {/* Popular Searches */}
             {!searchQuery && (
               <div className="mt-4">
-                <h3 className="text-sm font-medium text-slate-700 mb-2">Popular Searches</h3>
+                <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Popular Searches</h3>
                 <div className="flex flex-wrap gap-2">
                   {['Floral', 'Citrus', 'Woody', 'Oriental'].map((term) => (
                     <button
                       key={term}
                       type="button"
                       onClick={() => setSearchQuery(term)}
-                      className="px-3 py-1 bg-slate-100 hover:bg-slate-200 rounded-full text-sm text-slate-700 transition-colors"
+                      className="px-3 py-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-full text-sm text-slate-700 dark:text-slate-300 transition-colors"
                     >
                       {term}
                     </button>

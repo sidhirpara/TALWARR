@@ -48,10 +48,10 @@ const QRLanding = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 to-slate-50 pt-20">
+    <div className="pt-20 min-h-screen bg-gradient-to-br from-rose-50 to-slate-50 dark:from-slate-900 dark:to-slate-800">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center">
-          <h1 className="text-4xl font-serif text-slate-800 mb-8">Connect With Us</h1>
+          <h1 className="text-4xl font-serif text-slate-800 dark:text-white mb-8">Connect With Us</h1>
           
           {/* QR Code Section */}
           <div className="relative inline-block">
@@ -61,35 +61,35 @@ const QRLanding = () => {
               rel="noopener noreferrer"
               className="inline-block transform hover:scale-105 transition-transform duration-300"
             >
-              <div className="bg-white p-4 rounded-2xl shadow-lg">
+              <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-lg">
                 <QRCodeSVG
                   value={currentURL}
                   size={240}
                   level="H"
                   includeMargin={true}
-                  className="rounded-xl"
+                  className="rounded-xl dark:bg-white"
                 />
               </div>
             </a>
           </div>
           
-          <p className="mt-6 text-slate-600 max-w-md mx-auto">
+          <p className="mt-6 text-slate-600 dark:text-slate-300 max-w-md mx-auto">
             Scan the QR code to save our contact information or click on it to visit our digital business card.
           </p>
         </div>
 
         {/* Social Media Pop-up */}
         {showSocial && (
-          <div className="fixed bottom-8 right-8 bg-white rounded-2xl shadow-xl p-6 animate-slide-up z-50 max-w-sm w-full sm:w-auto">
+          <div className="fixed bottom-8 right-8 bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 animate-slide-up z-50 max-w-sm w-full sm:w-auto">
             <button
               onClick={() => setShowSocial(false)}
-              className="absolute top-3 right-3 text-slate-400 hover:text-slate-600 transition-colors"
+              className="absolute top-3 right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
               aria-label="Close social media panel"
             >
               <X className="w-5 h-5" />
             </button>
             
-            <h2 className="text-xl font-serif text-slate-800 mb-4">Follow Us</h2>
+            <h2 className="text-xl font-serif text-slate-800 dark:text-white mb-4">Follow Us</h2>
             
             <div className="grid grid-cols-3 sm:grid-cols-5 gap-4">
               {socialLinks.map((social) => (
@@ -98,11 +98,11 @@ const QRLanding = () => {
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`flex flex-col items-center justify-center p-2 rounded-lg hover:bg-slate-50 transition-colors ${social.color}`}
+                  className={`flex flex-col items-center justify-center p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors ${social.color}`}
                   aria-label={`Visit our ${social.name} profile`}
                 >
                   {social.icon}
-                  <span className="text-xs mt-1 text-slate-600">{social.name}</span>
+                  <span className="text-xs mt-1 text-slate-600 dark:text-slate-400">{social.name}</span>
                 </a>
               ))}
             </div>

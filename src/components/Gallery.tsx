@@ -23,13 +23,13 @@ const Gallery = () => {
   ];
 
   return (
-    <div className="pt-20 min-h-screen bg-gradient-to-br from-rose-50 to-slate-50">
+    <div className="pt-20 min-h-screen bg-gradient-to-br from-rose-50 to-slate-50 dark:from-slate-900 dark:to-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h1 className="text-4xl font-serif text-slate-800 mb-8 text-center">Our Gallery</h1>
+        <h1 className="text-4xl font-serif text-slate-800 dark:text-white mb-8 text-center">Our Gallery</h1>
         
         {/* Featured Section */}
         <div className="mb-16">
-          <h2 className="text-2xl font-serif text-slate-700 mb-6">Featured Collections</h2>
+          <h2 className="text-2xl font-serif text-slate-700 dark:text-slate-200 mb-6">Featured Collections</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {images.map((image) => (
               <div key={image.id} className="group relative overflow-hidden rounded-lg shadow-lg">
@@ -51,36 +51,36 @@ const Gallery = () => {
 
         {/* Product Showcase */}
         <div>
-          <h2 className="text-2xl font-serif text-slate-700 mb-6">Product Showcase</h2>
+          <h2 className="text-2xl font-serif text-slate-700 dark:text-slate-200 mb-6">Product Showcase</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
               <img
                 src="https://images.unsplash.com/photo-1541643600914-78b084683601?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 alt="Product 1"
                 className="w-full h-48 object-cover rounded-md mb-4"
               />
-              <h3 className="text-lg font-serif text-slate-800 mb-2">Signature Collection</h3>
-              <p className="text-slate-600">Experience the essence of luxury with our signature collection.</p>
+              <h3 className="text-lg font-serif text-slate-800 dark:text-white mb-2">Signature Collection</h3>
+              <p className="text-slate-600 dark:text-slate-300">Experience the essence of luxury with our signature collection.</p>
             </div>
             
-            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
               <img
                 src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 alt="Product 2"
                 className="w-full h-48 object-cover rounded-md mb-4"
               />
-              <h3 className="text-lg font-serif text-slate-800 mb-2">Limited Edition</h3>
-              <p className="text-slate-600">Discover our exclusive limited edition fragrances.</p>
+              <h3 className="text-lg font-serif text-slate-800 dark:text-white mb-2">Limited Edition</h3>
+              <p className="text-slate-600 dark:text-slate-300">Discover our exclusive limited edition fragrances.</p>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
               <img
                 src="https://i.ibb.co/VpzWXpgb/Hero.webp?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80"
                 alt="Product 3"
                 className="w-full h-48 object-cover rounded-md mb-4"
               />
-              <h3 className="text-lg font-serif text-slate-800 mb-2">Premium Series</h3>
-              <p className="text-slate-600">Indulge in our premium selection of fragrances.</p>
+              <h3 className="text-lg font-serif text-slate-800 dark:text-white mb-2">Premium Series</h3>
+              <p className="text-slate-600 dark:text-slate-300">Indulge in our premium selection of fragrances.</p>
             </div>
           </div>
         </div>

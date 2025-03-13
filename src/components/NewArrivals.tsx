@@ -100,11 +100,11 @@ const NewArrivals = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 to-slate-50 pt-20">
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 to-slate-50 dark:from-slate-900 dark:to-slate-800 pt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-serif text-slate-800 mb-4">New Arrivals</h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <h1 className="text-4xl font-serif text-slate-800 dark:text-white mb-4">New Arrivals</h1>
+          <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
             Discover our latest collection of exquisite fragrances and premium car fresheners.
             Each piece is carefully curated to elevate your sensory experience.
           </p>
@@ -167,7 +167,7 @@ const NewArrivals = () => {
                 <X className="w-6 h-6" />
               </button>
               
-              <div className="bg-white rounded-xl overflow-hidden shadow-2xl">
+              <div className="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-2xl">
                 <div className="relative py-8">
                   <img
                     src={optimizeImageUrl(selectedImage.url, 1200)}
@@ -182,19 +182,19 @@ const NewArrivals = () => {
                   />
                 </div>
                 <div className="p-6">
-                  <h3 className="text-2xl font-serif text-slate-800 mb-2">
+                  <h3 className="text-2xl font-serif text-slate-800 dark:text-white mb-2">
                     {selectedImage.title}
                   </h3>
-                  <p className="text-slate-600 mb-3">
+                  <p className="text-slate-600 dark:text-slate-300 mb-3">
                     {selectedImage.type === 'perfume'
                       ? 'Experience the essence of luxury with our newest fragrance addition.'
                       : "Transform your vehicle's atmosphere with our premium car freshener collection."}
                   </p>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-rose-600">
+                    <span className="text-sm font-medium text-rose-600 dark:text-rose-400">
                       AVAILABLE IN-STORE ONLY
                     </span>
-                    <span className="text-sm text-slate-500">
+                    <span className="text-sm text-slate-500 dark:text-slate-400">
                       New Arrival {new Date().getFullYear()}
                     </span>
                   </div>
