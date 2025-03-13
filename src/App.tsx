@@ -147,7 +147,7 @@ function NavigationContent() {
                       <img
                         src="https://i.ibb.co/cKgSGZXH/Hero.png?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80"
                         alt="Luxury Perfume"
-                        className="rounded-lg shadow-xl hover:scale-[1.02] transition-transform duration-500"
+                        className="rounded-[40px] shadow-xl hover:scale-[1.02] transition-transform duration-500"
                       />
                     </div>
                   </div>
