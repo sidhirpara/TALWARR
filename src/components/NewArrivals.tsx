@@ -10,10 +10,12 @@ interface GalleryImage {
 
 const NewArrivals = () => {
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const handleModalClose = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       setSelectedImage(null);
+      setIsImageLoaded(false);
     }
   }, []);
 
@@ -21,6 +23,7 @@ const NewArrivals = () => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setSelectedImage(null);
+        setIsImageLoaded(false);
       }
     };
 
@@ -111,7 +114,10 @@ const NewArrivals = () => {
           {galleryImages.map((image) => (
             <div
               key={image.id}
-              onClick={() => setSelectedImage(image)}
+              onClick={() => {
+                setSelectedImage(image);
+                setIsImageLoaded(false);
+              }}
               className="group relative aspect-square overflow-hidden rounded-xl shadow-lg hover:scale-[1.02] transition-all duration-300 cursor-pointer"
             >
               <img
@@ -151,7 +157,10 @@ const NewArrivals = () => {
           >
             <div className="relative w-full max-w-5xl mx-auto animate-fade-up">
               <button
-                onClick={() => setSelectedImage(null)}
+                onClick={() => {
+                  setSelectedImage(null);
+                  setIsImageLoaded(false);
+                }}
                 className="absolute -top-2 right-0 md:-right-2 text-white hover:text-rose-300 transition-colors z-10 bg-black/50 rounded-full p-1"
                 aria-label="Close modal"
               >
@@ -159,12 +168,17 @@ const NewArrivals = () => {
               </button>
               
               <div className="bg-white rounded-xl overflow-hidden shadow-2xl">
-                <div className="relative">
+                <div className="relative py-8">
                   <img
                     src={optimizeImageUrl(selectedImage.url, 1200)}
                     alt={selectedImage.title}
-                    className="w-full h-auto max-h-[70vh] object-contain"
+                    className={`w-full h-auto max-h-[70vh] object-contain transition-all duration-700 ${
+                      isImageLoaded 
+                        ? 'opacity-100 scale-100' 
+                        : 'opacity-0 scale-95'
+                    }`}
                     loading="eager"
+                    onLoad={() => setIsImageLoaded(true)}
                   />
                 </div>
                 <div className="p-6">
