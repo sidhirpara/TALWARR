@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, X } from 'lucide-react';
+import { Search, X, Mic, MicOff } from 'lucide-react';
 import { products, Product } from '../data/products';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,13 +12,92 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [isSpeechSupported, setIsSpeechSupported] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const recognitionRef = useRef<any>(null);
+  const stopTimeoutRef = useRef<number>();
   const navigate = useNavigate();
+
+  // Initialize speech recognition
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false; // Changed to false to prevent result accumulation
+      recognitionRef.current.interimResults = false; // Disabled to prevent partial results
+      recognitionRef.current.lang = 'en-US';
+      setIsSpeechSupported(true);
+
+      recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
+        const transcript = event.results[0][0].transcript;
+        setSearchQuery(transcript);
+
+        // Set timeout to stop listening after 1.75 seconds of silence
+        if (stopTimeoutRef.current) {
+          window.clearTimeout(stopTimeoutRef.current);
+        }
+        stopTimeoutRef.current = window.setTimeout(() => {
+          stopListening();
+        }, 1750);
+      };
+
+      recognitionRef.current.onend = () => {
+        // If we're still supposed to be listening, restart recognition
+        if (isListening && !stopTimeoutRef.current) {
+          recognitionRef.current.start();
+        } else {
+          setIsListening(false);
+        }
+      };
+
+      recognitionRef.current.onerror = (event: SpeechRecognitionErrorEvent) => {
+        if (event.error === 'not-allowed') {
+          setError('Microphone access denied. Please check your browser settings.');
+        } else {
+          setError('An error occurred with speech recognition.');
+        }
+        stopListening();
+      };
+    }
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+      if (stopTimeoutRef.current) {
+        window.clearTimeout(stopTimeoutRef.current);
+      }
+    };
+  }, [isListening]); // Added isListening to dependencies
+
+  // Handle search bar close
+  useEffect(() => {
+    if (!isOpen) {
+      stopListening();
+    }
+  }, [isOpen]);
+
+  // Handle hotkey (Ctrl + Space)
+  useEffect(() => {
+    const handleHotkey = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.code === 'Space' && isOpen && isSpeechSupported) {
+        e.preventDefault();
+        toggleListening();
+      }
+    };
+
+    window.addEventListener('keydown', handleHotkey);
+    return () => window.removeEventListener('keydown', handleHotkey);
+  }, [isOpen, isSpeechSupported]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        stopListening();
         onClose();
       }
     };
@@ -49,6 +128,40 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
     }
   }, [searchQuery]);
 
+  const toggleListening = () => {
+    if (!isListening) {
+      startListening();
+    } else {
+      stopListening();
+    }
+  };
+
+  const startListening = () => {
+    setError(null);
+    setIsListening(true);
+    // Clear any existing timeout
+    if (stopTimeoutRef.current) {
+      window.clearTimeout(stopTimeoutRef.current);
+      stopTimeoutRef.current = undefined;
+    }
+    try {
+      recognitionRef.current?.start();
+    } catch (err) {
+      // Handle the case where recognition is already started
+      recognitionRef.current?.stop();
+      recognitionRef.current?.start();
+    }
+  };
+
+  const stopListening = () => {
+    setIsListening(false);
+    if (stopTimeoutRef.current) {
+      window.clearTimeout(stopTimeoutRef.current);
+      stopTimeoutRef.current = undefined;
+    }
+    recognitionRef.current?.stop();
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
   };
@@ -56,6 +169,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
   const clearSearch = () => {
     setSearchQuery('');
     setSearchResults([]);
+    stopListening();
   };
 
   const handleProductClick = (product: Product) => {
@@ -92,21 +206,68 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search for perfumes..."
+                placeholder="Search for perfumes... (Ctrl + Space for voice search)"
                 aria-label="Search for perfumes"
-                className="w-full pl-12 pr-10 py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-600 focus:border-transparent bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-300"
+                className="w-full pl-12 pr-24 py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-600 focus:border-transparent bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-300"
               />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={clearSearch}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                  aria-label="Clear search"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              )}
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center space-x-2">
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={clearSearch}
+                    className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                    aria-label="Clear search"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                )}
+                {isSpeechSupported && (
+                  <button
+                    type="button"
+                    onClick={toggleListening}
+                    className={`p-1 rounded-full transition-all duration-300 ${
+                      isListening 
+                        ? 'bg-rose-100 dark:bg-rose-900 text-rose-600 dark:text-rose-300 animate-pulse'
+                        : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                    }`}
+                    aria-label={isListening ? 'Stop voice search' : 'Start voice search'}
+                  >
+                    {isListening ? (
+                      <Mic className="w-5 h-5" />
+                    ) : (
+                      <MicOff className="w-5 h-5" />
+                    )}
+                  </button>
+                )}
+              </div>
             </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="mt-2 text-sm text-rose-600 dark:text-rose-400">
+                {error}
+              </div>
+            )}
+
+            {/* Voice Search Indicator */}
+            {isListening && (
+              <div className="mt-2 flex items-center justify-center space-x-1">
+                <div className="flex items-center space-x-1">
+                  {[...Array(3)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="w-1 h-4 bg-rose-500 dark:bg-rose-400 rounded-full animate-[wave_1s_ease-in-out_infinite]"
+                      style={{
+                        animationDelay: `${i * 0.2}s`,
+                      }}
+                    />
+                  ))}
+                </div>
+                <span className="text-sm text-slate-600 dark:text-slate-300 ml-2">
+                  Listening...
+                </span>
+              </div>
+            )}
 
             {/* Search Results */}
             {searchQuery && (
