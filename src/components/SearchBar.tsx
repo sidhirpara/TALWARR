@@ -2,10 +2,20 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Search, X, Mic, MicOff } from 'lucide-react';
 import { products, Product } from '../data/products';
 import { useNavigate } from 'react-router-dom';
+import type { SpeechRecognition, SpeechRecognitionEvent, SpeechRecognitionErrorEvent } from 'dom-speech-recognition';
 
 interface SearchBarProps {
   isOpen: boolean;
   onClose: () => void;
+}
+
+declare global {
+  interface Window {
+    SpeechRecognition: typeof SpeechRecognition;
+    webkitSpeechRecognition: typeof SpeechRecognition;
+    mozSpeechRecognition: typeof SpeechRecognition;
+    msSpeechRecognition: typeof SpeechRecognition;
+  }
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
@@ -15,73 +25,130 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
   const [isListening, setIsListening] = useState(false);
   const [isSpeechSupported, setIsSpeechSupported] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isInitializing, setIsInitializing] = useState(false);
   
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
   const stopTimeoutRef = useRef<number>();
   const navigate = useNavigate();
 
-  // Initialize speech recognition
   useEffect(() => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false; // Changed to false to prevent result accumulation
-      recognitionRef.current.interimResults = false; // Disabled to prevent partial results
-      recognitionRef.current.lang = 'en-US';
-      setIsSpeechSupported(true);
+    const initializeSpeechRecognition = () => {
+      try {
+        setIsInitializing(true);
+        const SpeechRecognitionAPI = 
+          window.SpeechRecognition ||
+          window.webkitSpeechRecognition ||
+          window.mozSpeechRecognition ||
+          window.msSpeechRecognition;
 
-      recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
-        const transcript = event.results[0][0].transcript;
-        setSearchQuery(transcript);
-
-        // Set timeout to stop listening after 1.75 seconds of silence
-        if (stopTimeoutRef.current) {
-          window.clearTimeout(stopTimeoutRef.current);
+        if (!SpeechRecognitionAPI) {
+          throw new Error('Speech recognition is not supported in this browser');
         }
-        stopTimeoutRef.current = window.setTimeout(() => {
+
+        recognitionRef.current = new SpeechRecognitionAPI();
+        
+        recognitionRef.current.continuous = false;
+        recognitionRef.current.interimResults = true;
+        recognitionRef.current.maxAlternatives = 1;
+        recognitionRef.current.lang = 'en-US';
+
+        recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
+          try {
+            const transcript = event.results[event.results.length - 1];
+            if (transcript.isFinal) {
+              setSearchQuery(transcript[0].transcript);
+              
+              if (stopTimeoutRef.current) {
+                window.clearTimeout(stopTimeoutRef.current);
+              }
+              stopTimeoutRef.current = window.setTimeout(() => {
+                stopListening();
+              }, 1000);
+            }
+          } catch (err) {
+            console.error('Error processing speech result:', err);
+            setError('Failed to process speech input. Please try again.');
+            stopListening();
+          }
+        };
+
+        recognitionRef.current.onend = () => {
+          if (isListening && !stopTimeoutRef.current) {
+            try {
+              startListening();
+            } catch (err) {
+              console.error('Error restarting recognition:', err);
+              setIsListening(false);
+            }
+          } else {
+            setIsListening(false);
+          }
+        };
+
+        recognitionRef.current.onerror = (event: SpeechRecognitionErrorEvent) => {
+          let errorMessage = 'An error occurred with speech recognition.';
+          
+          switch (event.error) {
+            case 'not-allowed':
+              errorMessage = 'Microphone access denied. Please check your browser settings and permissions.';
+              break;
+            case 'no-speech':
+              errorMessage = 'No speech was detected. Please try again.';
+              break;
+            case 'network':
+              errorMessage = 'Network error occurred. Please check your internet connection.';
+              break;
+            case 'audio-capture':
+              errorMessage = 'No microphone was found. Please check your device settings.';
+              break;
+            case 'service-not-allowed':
+              errorMessage = 'Speech recognition service is not allowed. Please try again later.';
+              break;
+          }
+          
+          setError(errorMessage);
           stopListening();
-        }, 1750);
-      };
+        };
 
-      recognitionRef.current.onend = () => {
-        // If we're still supposed to be listening, restart recognition
-        if (isListening && !stopTimeoutRef.current) {
-          recognitionRef.current.start();
-        } else {
-          setIsListening(false);
-        }
-      };
+        recognitionRef.current.onnomatch = () => {
+          setError('Could not understand speech. Please try again.');
+          stopListening();
+        };
 
-      recognitionRef.current.onerror = (event: SpeechRecognitionErrorEvent) => {
-        if (event.error === 'not-allowed') {
-          setError('Microphone access denied. Please check your browser settings.');
-        } else {
-          setError('An error occurred with speech recognition.');
-        }
-        stopListening();
-      };
-    }
+        setIsSpeechSupported(true);
+      } catch (err) {
+        console.error('Speech recognition initialization error:', err);
+        setError('Speech recognition is not available on this device or browser.');
+        setIsSpeechSupported(false);
+      } finally {
+        setIsInitializing(false);
+      }
+    };
+
+    initializeSpeechRecognition();
 
     return () => {
       if (recognitionRef.current) {
-        recognitionRef.current.stop();
+        try {
+          recognitionRef.current.stop();
+        } catch (err) {
+          console.error('Error stopping recognition:', err);
+        }
       }
       if (stopTimeoutRef.current) {
         window.clearTimeout(stopTimeoutRef.current);
       }
     };
-  }, [isListening]); // Added isListening to dependencies
+  }, []);
 
-  // Handle search bar close
   useEffect(() => {
     if (!isOpen) {
       stopListening();
     }
   }, [isOpen]);
 
-  // Handle hotkey (Ctrl + Space)
   useEffect(() => {
     const handleHotkey = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.code === 'Space' && isOpen && isSpeechSupported) {
@@ -137,20 +204,44 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
   };
 
   const startListening = () => {
+    if (isInitializing) {
+      setError('Speech recognition is still initializing. Please try again in a moment.');
+      return;
+    }
+
+    if (!recognitionRef.current) {
+      setError('Speech recognition is not available.');
+      return;
+    }
+
     setError(null);
-    setIsListening(true);
+
+    // Always stop first to ensure clean state
+    try {
+      recognitionRef.current.stop();
+    } catch (err) {
+      // Ignore any errors from stopping
+    }
+
     // Clear any existing timeout
     if (stopTimeoutRef.current) {
       window.clearTimeout(stopTimeoutRef.current);
       stopTimeoutRef.current = undefined;
     }
-    try {
-      recognitionRef.current?.start();
-    } catch (err) {
-      // Handle the case where recognition is already started
-      recognitionRef.current?.stop();
-      recognitionRef.current?.start();
-    }
+
+    // Wait a moment before starting again
+    setTimeout(() => {
+      try {
+        if (recognitionRef.current) {
+          recognitionRef.current.start();
+          setIsListening(true);
+        }
+      } catch (err) {
+        console.error('Error starting recognition:', err);
+        setError('Failed to start speech recognition. Please try again.');
+        setIsListening(false);
+      }
+    }, 100);
   };
 
   const stopListening = () => {
@@ -159,7 +250,11 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
       window.clearTimeout(stopTimeoutRef.current);
       stopTimeoutRef.current = undefined;
     }
-    recognitionRef.current?.stop();
+    try {
+      recognitionRef.current?.stop();
+    } catch (err) {
+      console.error('Error stopping recognition:', err);
+    }
   };
 
   const handleSearch = (e: React.FormEvent) => {
@@ -206,7 +301,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search for perfumes... (Ctrl + Space for voice search)"
+                placeholder={isSpeechSupported ? "Search for perfumes... (Ctrl + Space for voice search)" : "Search for perfumes..."}
                 aria-label="Search for perfumes"
                 className="w-full pl-12 pr-24 py-3 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-600 focus:border-transparent bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-300"
               />
@@ -221,7 +316,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
                     <X className="w-5 h-5" />
                   </button>
                 )}
-                {isSpeechSupported && (
+                {isSpeechSupported && !isInitializing && (
                   <button
                     type="button"
                     onClick={toggleListening}
@@ -242,14 +337,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
 
-            {/* Error Message */}
             {error && (
               <div className="mt-2 text-sm text-rose-600 dark:text-rose-400">
                 {error}
               </div>
             )}
 
-            {/* Voice Search Indicator */}
             {isListening && (
               <div className="mt-2 flex items-center justify-center space-x-1">
                 <div className="flex items-center space-x-1">
@@ -269,7 +362,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
               </div>
             )}
 
-            {/* Search Results */}
             {searchQuery && (
               <div className="mt-4 max-h-[60vh] overflow-y-auto">
                 {isSearching ? (
@@ -312,7 +404,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onClose }) => {
               </div>
             )}
 
-            {/* Popular Searches */}
             {!searchQuery && (
               <div className="mt-4">
                 <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Popular Searches</h3>
