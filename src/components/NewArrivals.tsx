@@ -45,33 +45,33 @@ const NewArrivals = () => {
   const galleryImages: GalleryImage[] = [
     {
       id: 1,
-      url: "https://sedralkhaleej.com/cdn/shop/files/RoyalEssence100ml_03514.png?v=1739484913&width=2048",
-      title: "Royal Essence",
+      url: "https://i.ibb.co/wNFcygLV/Fresh-Fresh.png",
+      title: "Fresh & Fresh",
       type: "perfume"
     },
     {
       id: 2,
-      url: "https://images.unsplash.com/photo-1594035910387-fea47794261f",
-      title: "Midnight Bloom",
+      url: "https://i.ibb.co/nNtyYZYx/Green-Wood.png",
+      title: "Green Wood",
       type: "perfume"
     },
     {
       id: 3,
-      url: "https://rukminim2.flixcart.com/image/850/1000/xif0q/perfume/8/m/q/100-ocean-breeze-perfume-fresh-and-exhilarating-scent-long-original-imagz3y4acpyygda.jpeg",
-      title: "Ocean Breeze",
+      url: "https://i.ibb.co/rfz8Jw8s/Kapur.png",
+      title: "Kapur",
       type: "freshener"
     },
     {
       id: 4,
-      url: "https://static-01.daraz.pk/p/6397f18cb9a66d255684953f0d77a7b0.jpg",
-      title: "Golden Aura",
+      url: "https://i.ibb.co/tT0SQ9Kk/Lemon.png",
+      title: "Lemon",
       type: "perfume"
     },
     {
       id: 5,
-      url: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539",
-      title: "Forest Pine",
-      type: "freshener"
+      url: "https://i.ibb.co/7tWhDWJg/White-oud.png",
+      title: "White Oud",
+      type: "perfume"
     },
     {
       id: 6,
